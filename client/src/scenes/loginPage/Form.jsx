@@ -3,6 +3,8 @@ import {
   Box,
   Button,
   TextField,
+  IconButton,
+  InputAdornment,
   useMediaQuery,
   Typography,
   useTheme,
@@ -15,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { setLogin } from "state";
 import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("required"),
@@ -42,14 +45,34 @@ const initialValuesLogin = {
   password: "",
 };
 
+const getPasswordStrength = (password) => {
+  if (password.length === 0) {
+    return "";
+  } else if (password.length < 6) {
+    return "Weak";
+  } else if (
+    password.length < 12 ||
+    !/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&^+#])/.test(password)
+  ) {
+    return "Medium";
+  } else {
+    return "Strong";
+  }
+};
+
 const Form = () => {
   const [pageType, setPageType] = useState("login");
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
   const { palette } = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const isLogin = pageType === "login";
   const isRegister = pageType === "register";
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const register = async (values, onSubmitProps) => {
     // this allows us to send form info with image
@@ -195,7 +218,7 @@ const Form = () => {
             />
             <TextField
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"} // Toggle password visibility
               onBlur={handleBlur}
               onChange={handleChange}
               value={values.password}
@@ -203,7 +226,48 @@ const Form = () => {
               error={Boolean(touched.password) && Boolean(errors.password)}
               helperText={touched.password && errors.password}
               sx={{ gridColumn: "span 4" }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleTogglePasswordVisibility}>
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
+            {/* Password Strength Text */}
+            {values.password.length > 0 && (
+              <Typography
+                sx={{
+                  gridColumn: "span 4",
+                  color:
+                    getPasswordStrength(values.password) === "Weak"
+                      ? "red"
+                      : getPasswordStrength(values.password) === "Medium"
+                      ? "orange"
+                      : "green",
+                  textAlign: "center", // Center the text
+                }}
+              >
+                {getPasswordStrength(values.password)}
+              </Typography>
+            )}
+            {/* Password Strength Bar */}
+            {values.password.length > 0 && (
+              <Box
+                sx={{
+                  gridColumn: "span 4",
+                  height: "8px",
+                  backgroundColor:
+                    getPasswordStrength(values.password) === "Weak"
+                      ? "red"
+                      : getPasswordStrength(values.password) === "Medium"
+                      ? "orange"
+                      : "green",
+                }}
+              ></Box>
+            )}
           </Box>
 
           {/* BUTTONS */}
