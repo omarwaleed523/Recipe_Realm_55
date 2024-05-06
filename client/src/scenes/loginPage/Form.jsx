@@ -146,8 +146,72 @@ const Form = () => {
               "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
             }}
           >
+            <TextField
+              label="Email"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.email}
+              name="email"
+              error={Boolean(touched.email) && Boolean(errors.email)}
+              helperText={touched.email && errors.email}
+              sx={{ gridColumn: "span 4" }}
+            />
+            <TextField
+              label="Password"
+              type={showPassword ? "text" : "password"} // Toggle password visibility
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.password}
+              name="password"
+              error={Boolean(touched.password) && Boolean(errors.password)}
+              helperText={touched.password && errors.password}
+              sx={{ gridColumn: "span 4" }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleTogglePasswordVisibility}>
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            
             {isRegister && (
               <>
+
+              {/* Password Strength Text */}
+              {values.password.length > 0 && (
+                <Typography
+                  sx={{
+                    gridColumn: "span 4",
+                    color:
+                      getPasswordStrength(values.password) === "Weak"
+                        ? "red"
+                        : getPasswordStrength(values.password) === "Medium"
+                        ? "orange"
+                        : "green",
+                    textAlign: "center", // Center the text
+                  }}
+                >
+                  {getPasswordStrength(values.password)}
+                </Typography>
+              )}
+              {/* Password Strength Bar */}
+              {values.password.length > 0 && (
+                <Box
+                  sx={{
+                    gridColumn: "span 4",
+                    height: "8px",
+                    backgroundColor:
+                      getPasswordStrength(values.password) === "Weak"
+                        ? "red"
+                        : getPasswordStrength(values.password) === "Medium"
+                        ? "orange"
+                        : "green",
+                  }}
+                ></Box>
+            )}
                 <TextField
                   label="First Name"
                   onBlur={handleBlur}
@@ -206,68 +270,7 @@ const Form = () => {
               </>
             )}
 
-            <TextField
-              label="Email"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              value={values.email}
-              name="email"
-              error={Boolean(touched.email) && Boolean(errors.email)}
-              helperText={touched.email && errors.email}
-              sx={{ gridColumn: "span 4" }}
-            />
-            <TextField
-              label="Password"
-              type={showPassword ? "text" : "password"} // Toggle password visibility
-              onBlur={handleBlur}
-              onChange={handleChange}
-              value={values.password}
-              name="password"
-              error={Boolean(touched.password) && Boolean(errors.password)}
-              helperText={touched.password && errors.password}
-              sx={{ gridColumn: "span 4" }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleTogglePasswordVisibility}>
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            {/* Password Strength Text */}
-            {values.password.length > 0 && (
-              <Typography
-                sx={{
-                  gridColumn: "span 4",
-                  color:
-                    getPasswordStrength(values.password) === "Weak"
-                      ? "red"
-                      : getPasswordStrength(values.password) === "Medium"
-                      ? "orange"
-                      : "green",
-                  textAlign: "center", // Center the text
-                }}
-              >
-                {getPasswordStrength(values.password)}
-              </Typography>
-            )}
-            {/* Password Strength Bar */}
-            {values.password.length > 0 && (
-              <Box
-                sx={{
-                  gridColumn: "span 4",
-                  height: "8px",
-                  backgroundColor:
-                    getPasswordStrength(values.password) === "Weak"
-                      ? "red"
-                      : getPasswordStrength(values.password) === "Medium"
-                      ? "orange"
-                      : "green",
-                }}
-              ></Box>
-            )}
+            
           </Box>
 
           {/* BUTTONS */}
