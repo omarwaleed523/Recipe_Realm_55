@@ -8,6 +8,9 @@ import {
   useMediaQuery,
   Typography,
   useTheme,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
 } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
@@ -25,6 +28,7 @@ const registerSchema = yup.object().shape({
   email: yup.string().email("invalid email").required("required"),
   password: yup.string().required("required"),
   picture: yup.string().required("required"),
+  usertype: yup.string().required("required"),
 });
 
 const loginSchema = yup.object().shape({
@@ -38,6 +42,7 @@ const initialValuesRegister = {
   email: "",
   password: "",
   picture: "",
+  usertype: "user", // default role
 };
 
 const initialValuesLogin = {
@@ -112,7 +117,13 @@ const Form = () => {
           token: loggedIn.token,
         })
       );
-      navigate("/home");
+      if( loggedIn.user.usertype ==="admin"){
+        navigate("/admin");
+      }
+      else{
+          navigate("/home")
+      }
+    
     }
   };
 
@@ -179,39 +190,58 @@ const Form = () => {
             
             {isRegister && (
               <>
-
-              {/* Password Strength Text */}
-              {values.password.length > 0 && (
-                <Typography
-                  sx={{
-                    gridColumn: "span 4",
-                    color:
-                      getPasswordStrength(values.password) === "Weak"
-                        ? "red"
-                        : getPasswordStrength(values.password) === "Medium"
-                        ? "orange"
-                        : "green",
-                    textAlign: "center", // Center the text
-                  }}
-                >
-                  {getPasswordStrength(values.password)}
-                </Typography>
-              )}
-              {/* Password Strength Bar */}
-              {values.password.length > 0 && (
-                <Box
-                  sx={{
-                    gridColumn: "span 4",
-                    height: "8px",
-                    backgroundColor:
-                      getPasswordStrength(values.password) === "Weak"
-                        ? "red"
-                        : getPasswordStrength(values.password) === "Medium"
-                        ? "orange"
-                        : "green",
-                  }}
-                ></Box>
-            )}
+                {/* Password Strength Text */}
+                {values.password.length > 0 && (
+                  <Typography
+                    sx={{
+                      gridColumn: "span 4",
+                      color:
+                        getPasswordStrength(values.password) === "Weak"
+                          ? "red"
+                          : getPasswordStrength(values.password) === "Medium"
+                          ? "orange"
+                          : "green",
+                      textAlign: "center", // Center the text
+                    }}
+                  >
+                    {getPasswordStrength(values.password)}
+                  </Typography>
+                )}
+                {/* Password Strength Bar */}
+                {values.password.length > 0 && (
+                  <Box
+                    sx={{
+                      gridColumn: "span 4",
+                      height: "8px",
+                      backgroundColor:
+                        getPasswordStrength(values.password) === "Weak"
+                          ? "red"
+                          : getPasswordStrength(values.password) === "Medium"
+                          ? "orange"
+                          : "green",
+                    }}
+                  ></Box>
+                )}
+                <RadioGroup
+              aria-label="usertype"
+              name="usertype"
+              value={values.usertype}
+              onChange={handleChange}
+              sx={{ gridColumn: "span 4", flexDirection: "row" }}
+            >
+              <FormControlLabel
+                value="user"
+                control={<Radio />}
+                label="User"
+                usertype="User"
+              />
+              <FormControlLabel
+                value="admin"
+                control={<Radio />}
+                label="admin"
+                usertype="admin"
+              />
+            </RadioGroup>
                 <TextField
                   label="First Name"
                   onBlur={handleBlur}
@@ -269,10 +299,7 @@ const Form = () => {
                 </Box>
               </>
             )}
-
-            
           </Box>
-
           {/* BUTTONS */}
           <Box>
             <Button
