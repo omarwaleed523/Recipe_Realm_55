@@ -54,11 +54,23 @@ const RecipeForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    const formDataToSend = new FormData();
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("type", formData.type);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("ingredients", formData.ingredients);
+    if (formData.recipeImage) {
+      formDataToSend.append("recipeImage", formData.recipeImage);
+    }
+  
     try {
-      const response = await axios.post("http://localhost:3001/recipes", formData);
+      const response = await axios.post("http://localhost:3001/recipes", formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       console.log("Recipe created:", response.data);
-      // Optionally, reset form fields after successful submission
       setFormData({
         name: "",
         type: "",
@@ -67,12 +79,12 @@ const RecipeForm = () => {
         ingredientInput: "",
         recipeImage: null,
       });
-      setOpen(false); // Close the modal after submission
+      setOpen(false);
     } catch (error) {
       console.error("Error creating recipe:", error);
-      // Handle error, perhaps display an error message to the user
     }
   };
+  
 
   return (
     <>

@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "scenes/navbar";
 import RecipeWidget from "scenes/widgets/RecipeWidget";
-import AllRecipesWidget from "scenes/widgets/AllRecipesWidget";
+import RecipeList from 'components/RecipeList';
 import './LandingPage.css';
 
 const LandingPage = () => {
@@ -16,7 +16,7 @@ const LandingPage = () => {
             </div>
             <div className="form-container">
                 <RecipeWidget /> 
-                
+                <RecipeList />
             </div>
         </div>
     );
