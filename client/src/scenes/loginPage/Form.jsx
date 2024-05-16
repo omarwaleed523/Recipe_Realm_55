@@ -121,7 +121,7 @@ const Form = () => {
         navigate("/admin");
       }
       else{
-          navigate("/home")
+          navigate("/LandingPage")
       }
     
     }

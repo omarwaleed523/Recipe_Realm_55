@@ -95,6 +95,7 @@ const RecipeForm = () => {
             bgcolor={"white"}
             borderRadius={5}
             boxShadow={3}
+            
             maxWidth={500} // Limiting the maximum width of the form
           >
             <Box display="flex" justifyContent="flex-end" mb={2}>

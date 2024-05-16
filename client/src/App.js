@@ -22,7 +22,7 @@ function App() {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<LoginPage />} />
             <Route
               path="/home"
               element={isAuth ? <HomePage /> : <Navigate to="/" />}
@@ -31,8 +31,13 @@ function App() {
               path="/profile/:userId"
               element={isAuth ? <ProfilePage /> : <Navigate to="/" />}
             />
+            <Route
+              path="/LandingPage"
+              element={isAuth ? <LandingPage /> : <Navigate to="/" />}
+            />
             <Route path="/admin" element={<AdminBoard />} />
             <Route path="/home" element={<HomePage />} />
+            <Route path="/LandingPage" element={<LandingPage />} />
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

@@ -24,6 +24,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state";
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
+import { Link } from "react-router-dom";
+import HomeIcon from "@mui/icons-material/Home";
+import FeedIcon from "@mui/icons-material/RssFeed";
+
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
@@ -41,7 +45,6 @@ const Navbar = () => {
 
   const fullName = user ? `${user.firstName} ${user.lastName}` : '';
 
-
   return (
     <FlexBetween padding="1rem 6%" backgroundColor={alt}>
       <FlexBetween gap="1.75rem">
@@ -49,7 +52,7 @@ const Navbar = () => {
           fontWeight="bold"
           fontSize="clamp(1rem, 2rem, 2.25rem)"
           color="primary"
-          onClick={() => navigate("/home")}
+          component={Link} to="/LandingPage" // Add Link to Home
           sx={{
             "&:hover": {
               color: primaryLight,
@@ -77,6 +80,18 @@ const Navbar = () => {
       {/* DESKTOP NAV */}
       {isNonMobileScreens ? (
         <FlexBetween gap="2rem">
+          {/* Add Link to Home */}
+          <IconButton component={Link} to="/LandingPage">
+            <HomeIcon sx={{ fontSize: "25px" }} />
+            <FlexBetween gap="2rem"></FlexBetween>
+            Home
+          </IconButton>
+          {/* Add Link to Feed */}
+          <IconButton component={Link} to="/home">
+            <FeedIcon sx={{ fontSize: "25px" }} />
+            <FlexBetween gap="2rem"></FlexBetween>
+            Feed
+          </IconButton>
           <IconButton onClick={() => dispatch(setMode())}>
             {theme.palette.mode === "dark" ? (
               <DarkMode sx={{ fontSize: "25px" }} />
@@ -84,9 +99,6 @@ const Navbar = () => {
               <LightMode sx={{ color: dark, fontSize: "25px" }} />
             )}
           </IconButton>
-          <Message sx={{ fontSize: "25px" }} />
-          <Notifications sx={{ fontSize: "25px" }} />
-          <Help sx={{ fontSize: "25px" }} />
           <FormControl variant="standard" value={fullName}>
             <Select
               value={fullName}
@@ -159,9 +171,6 @@ const Navbar = () => {
                 <LightMode sx={{ color: dark, fontSize: "25px" }} />
               )}
             </IconButton>
-            <Message sx={{ fontSize: "25px" }} />
-            <Notifications sx={{ fontSize: "25px" }} />
-            <Help sx={{ fontSize: "25px" }} />
             <FormControl variant="standard" value={fullName}>
               <Select
                 value={fullName}
