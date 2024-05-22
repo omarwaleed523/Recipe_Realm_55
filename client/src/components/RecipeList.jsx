@@ -1,11 +1,14 @@
-// components/RecipeList.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Grid, Container, Typography } from '@mui/material';
+import { Grid, Container, Typography, Snackbar, Alert } from '@mui/material';
 import RecipeCard from 'components/RecipeCards';
+import { Link } from 'react-router-dom';
 
-const RecipeList = () => {
+const ARecipeList = () => {
   const [recipes, setRecipes] = useState([]);
+  const [message, setMessage] = useState('');
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -20,6 +23,16 @@ const RecipeList = () => {
     fetchRecipes();
   }, []);
 
+  const handleDelete = (recipeId) => {
+    setRecipes(recipes.filter(recipe => recipe._id !== recipeId));
+    setMessage('Recipe deleted successfully');
+    setOpenSnackbar(true);
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
   return (
     <Container>
       <Typography variant="h4" component="h1" gutterBottom>
@@ -28,12 +41,23 @@ const RecipeList = () => {
       <Grid container spacing={3}>
         {recipes.map((recipe) => (
           <Grid item xs={12} sm={6} md={4} key={recipe._id}>
-            <RecipeCard recipe={recipe} />
+            <Link to={`/recipes/${recipe._id}`} style={{ textDecoration: 'none' }}>
+            <RecipeCard recipe={recipe} onDelete={handleDelete} />
+            </Link>
           </Grid>
         ))}
       </Grid>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+          {message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
 
-export default RecipeList;
+export default ARecipeList;

@@ -1,3 +1,4 @@
+// scenes/LandingPage/LandingPage.js
 import React from "react";
 import Navbar from "scenes/navbar";
 import RecipeWidget from "scenes/widgets/RecipeWidget";

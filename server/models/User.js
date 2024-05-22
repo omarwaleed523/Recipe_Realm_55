@@ -35,7 +35,7 @@ const UserSchema = new mongoose.Schema(
       },
       usertype: {
         type: String,
-        required: true,
+        //required: true,
         default: ""
       },
       viewedProfile: Number,

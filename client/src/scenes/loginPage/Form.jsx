@@ -8,9 +8,6 @@ import {
   useMediaQuery,
   Typography,
   useTheme,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
 } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
@@ -28,7 +25,6 @@ const registerSchema = yup.object().shape({
   email: yup.string().email("invalid email").required("required"),
   password: yup.string().required("required"),
   picture: yup.string().required("required"),
-  usertype: yup.string().required("required"),
 });
 
 const loginSchema = yup.object().shape({
@@ -42,7 +38,6 @@ const initialValuesRegister = {
   email: "",
   password: "",
   picture: "",
-  usertype: "user", // default role
 };
 
 const initialValuesLogin = {
@@ -80,12 +75,16 @@ const Form = () => {
   };
 
   const register = async (values, onSubmitProps) => {
+    // Determine user type based on email pattern
+    const userType = values.email.includes('-RRAD') ? 'admin' : 'user';
+
     // this allows us to send form info with image
     const formData = new FormData();
     for (let value in values) {
       formData.append(value, values[value]);
     }
     formData.append("picturePath", values.picture.name);
+    formData.append("usertype", userType);
 
     const savedUserResponse = await fetch(
       "http://localhost:3001/auth/register",
@@ -117,13 +116,11 @@ const Form = () => {
           token: loggedIn.token,
         })
       );
-      if( loggedIn.user.usertype ==="admin"){
+      if (loggedIn.user.usertype === "admin") {
         navigate("/admin");
+      } else {
+        navigate("/LandingPage");
       }
-      else{
-          navigate("/LandingPage")
-      }
-    
     }
   };
 
@@ -222,26 +219,6 @@ const Form = () => {
                     }}
                   ></Box>
                 )}
-                <RadioGroup
-              aria-label="usertype"
-              name="usertype"
-              value={values.usertype}
-              onChange={handleChange}
-              sx={{ gridColumn: "span 4", flexDirection: "row" }}
-            >
-              <FormControlLabel
-                value="user"
-                control={<Radio />}
-                label="User"
-                usertype="User"
-              />
-              <FormControlLabel
-                value="admin"
-                control={<Radio />}
-                label="admin"
-                usertype="admin"
-              />
-            </RadioGroup>
                 <TextField
                   label="First Name"
                   onBlur={handleBlur}

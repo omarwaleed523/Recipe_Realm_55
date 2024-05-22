@@ -12,29 +12,28 @@ import {
 } from "@mui/material";
 import {
   Search,
-  Message,
   DarkMode,
   LightMode,
-  Notifications,
-  Help,
   Menu,
   Close,
+  Home as HomeIcon,
+  RssFeed as FeedIcon,
+  Dashboard as DashboardIcon,
+  Info as AboutIcon, // Import the About icon
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state";
-import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
 import { Link } from "react-router-dom";
-import HomeIcon from "@mui/icons-material/Home";
-import FeedIcon from "@mui/icons-material/RssFeed";
-
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+  const isAdmin = user ? `${user.usertype}` : '';
+
+  console.log(isAdmin);
 
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
@@ -92,6 +91,20 @@ const Navbar = () => {
             <FlexBetween gap="2rem"></FlexBetween>
             Feed
           </IconButton>
+          {/* Add Link to About */}
+          <IconButton component={Link} to="/About">
+            <AboutIcon sx={{ fontSize: "25px" }} /> {/* Use the About icon */}
+            <FlexBetween gap="2rem"></FlexBetween>
+            About Us {/* Text label */}
+          </IconButton>
+          {/* Add Link to AdminDashboard */}
+          {isAdmin === 'admin' && (
+            <IconButton component={Link} to="/Admin">
+              <DashboardIcon sx={{ fontSize: "25px" }} />
+              <FlexBetween gap="2rem"></FlexBetween>
+              Dashboard
+            </IconButton>
+          )}
           <IconButton onClick={() => dispatch(setMode())}>
             {theme.palette.mode === "dark" ? (
               <DarkMode sx={{ fontSize: "25px" }} />
