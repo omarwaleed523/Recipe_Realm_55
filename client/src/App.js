@@ -1,3 +1,4 @@
+// App.js
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import HomePage from "scenes/homePage";
 import LoginPage from "scenes/loginPage";
@@ -9,7 +10,8 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme";
 import LandingPage from "scenes/LandingPage/LandingPage";
-
+import RecipeDetail from "components/RecipeDetail";
+import About from "Aboutus/About";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -35,9 +37,22 @@ function App() {
               path="/LandingPage"
               element={isAuth ? <LandingPage /> : <Navigate to="/" />}
             />
+            <Route
+              path="/About"
+              element={isAuth ? <About /> : <Navigate to="/" />}
+            />
+             <Route
+              path="/admin"
+              element={isAuth ? <AdminBoard /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/recipes/:id"
+              element={isAuth ? <RecipeDetail /> : <Navigate to="/" />}
+            />
             <Route path="/admin" element={<AdminBoard />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/LandingPage" element={<LandingPage />} />
+            <Route path="/About" element={<About />} />
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

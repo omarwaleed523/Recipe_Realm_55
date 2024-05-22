@@ -16,7 +16,8 @@ const recipeSchema = mongoose.Schema(
       type: [String],
       required: true,
     },
-    recipeImage: String, 
+    recipeImage: String,
+    youtubeLink: String, // Adding youtubeLink field to the schema
   },
   { timestamps: true }
 );

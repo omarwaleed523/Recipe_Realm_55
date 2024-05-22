@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { TextField, Button, Box, Typography, Select, MenuItem, Modal, IconButton } from "@mui/material";
-import { Close } from "@mui/icons-material";
+import { TextField, Button, Box, Typography, Select, MenuItem, Modal, IconButton, Fab } from "@mui/material";
+import { Add, Close } from "@mui/icons-material";
 import axios from "axios";
+import { useDropzone } from "react-dropzone";
 
 const RecipeForm = () => {
-  const [open, setOpen] = useState(false); // State to manage modal open/close
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     type: "",
@@ -12,6 +13,7 @@ const RecipeForm = () => {
     ingredients: [],
     ingredientInput: "",
     recipeImage: null,
+    youtubeLink: "",
   });
 
   const handleChange = (e) => {
@@ -44,21 +46,35 @@ const RecipeForm = () => {
     }
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setFormData((prevData) => ({
-      ...prevData,
-      recipeImage: file,
-    }));
+  const onDrop = (acceptedFiles) => {
+    if (acceptedFiles.length > 0) {
+      setFormData((prevData) => ({
+        ...prevData,
+        recipeImage: acceptedFiles[0],
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent the default form submission behavior
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("type", formData.type);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("ingredients", formData.ingredients);
+    formDataToSend.append("youtubeLink", formData.youtubeLink);
+    if (formData.recipeImage) {
+      formDataToSend.append("recipeImage", formData.recipeImage);
+    }
 
     try {
-      const response = await axios.post("http://localhost:3001/recipes", formData);
+      const response = await axios.post("http://localhost:3001/recipes", formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       console.log("Recipe created:", response.data);
-      // Optionally, reset form fields after successful submission
       setFormData({
         name: "",
         type: "",
@@ -66,19 +82,34 @@ const RecipeForm = () => {
         ingredients: [],
         ingredientInput: "",
         recipeImage: null,
+        youtubeLink: "",
       });
-      setOpen(false); // Close the modal after submission
+      setOpen(false);
     } catch (error) {
       console.error("Error creating recipe:", error);
-      // Handle error, perhaps display an error message to the user
     }
   };
 
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
   return (
     <>
-      <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
-        Create Recipe
-      </Button>
+      <Fab
+        color="primary"
+        aria-label="add"
+        onClick={() => setOpen(true)}
+        sx={{
+          position: "fixed",
+          bottom: 16,
+          right: 16,
+          bgcolor: "orange",
+          '&:hover': {
+            bgcolor: "darkorange",
+          }
+        }}
+      >
+        <Add />
+      </Fab>
       <Modal open={open} onClose={() => setOpen(false)}>
         <Box
           display="flex"
@@ -86,6 +117,8 @@ const RecipeForm = () => {
           justifyContent="center"
           alignItems="center"
           minHeight="100vh"
+          maxHeight="100vh"
+          overflow="auto"
           padding={2}
           bgcolor="rgba(0, 0, 0, 0.5)" // Semi-transparent background to overlay behind the modal
         >
@@ -95,7 +128,6 @@ const RecipeForm = () => {
             bgcolor={"white"}
             borderRadius={5}
             boxShadow={3}
-            
             maxWidth={500} // Limiting the maximum width of the form
           >
             <Box display="flex" justifyContent="flex-end" mb={2}>
@@ -174,20 +206,23 @@ const RecipeForm = () => {
                   Add Ingredient
                 </Button>
               </Box>
+              <TextField
+                fullWidth
+                label="YouTube Video Link"
+                name="youtubeLink"
+                value={formData.youtubeLink}
+                onChange={handleChange}
+                variant="outlined"
+                margin="normal"
+              />
               <Box display="flex" justifyContent="center" mb={2}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  style={{ display: "none" }}
-                  id="recipe-image-input"
-                />
-                <label htmlFor="recipe-image-input">
+                <div {...getRootProps()} style={{ outline: "none" }}>
+                  <input {...getInputProps()} accept="image/*" />
                   <Box
                     component="div"
-                    bgcolor="#e0e0e0"
-                    borderRadius={8}
-                    p={2}
+                    bgcolor="darkorange"
+                    borderRadius={3}
+                    p={4}
                     textAlign="center"
                     cursor="pointer"
                     fullWidth
@@ -195,7 +230,7 @@ const RecipeForm = () => {
                   >
                     Drag & Drop or Click to Upload Image
                   </Box>
-                </label>
+                </div>
               </Box>
               <Typography variant="body2" mt={1} mb={2} display="block">
                 {formData.recipeImage && formData.recipeImage.name}

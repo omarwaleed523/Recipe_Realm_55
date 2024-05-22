@@ -9,23 +9,34 @@ const FriendListWidget = ({ userId }) => {
   const dispatch = useDispatch();
   const { palette } = useTheme();
   const token = useSelector((state) => state.token);
-  const friends = useSelector((state) => state.user.friends);
-
-  const getFriends = async () => {
-    const response = await fetch(
-      `http://localhost:3001/users/${userId}/friends`,
-      {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-    const data = await response.json();
-    dispatch(setFriends({ friends: data }));
-  };
+  const friends = useSelector((state) => state.user.friends) || [];
 
   useEffect(() => {
+    const getFriends = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:3001/users/${userId}/friends`,
+          {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch friends");
+        }
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          dispatch(setFriends({ friends: data }));
+        } else {
+          console.error("Data received is not an array:", data);
+        }
+      } catch (error) {
+        console.error("Error fetching friends:", error);
+      }
+    };
+
     getFriends();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch, token, userId]);
 
   return (
     <WidgetWrapper>
@@ -38,7 +49,7 @@ const FriendListWidget = ({ userId }) => {
         Friend List
       </Typography>
       <Box display="flex" flexDirection="column" gap="1.5rem">
-        {friends.map((friend) => (
+        {Array.isArray(friends) && friends.map((friend) => (
           <Friend
             key={friend._id}
             friendId={friend._id}
