@@ -1,14 +1,20 @@
-// scenes/LandingPage/LandingPage.js
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "scenes/navbar";
 import RecipeWidget from "scenes/widgets/RecipeWidget";
 import RecipeList from 'components/RecipeList';
 import './LandingPage.css';
 
 const LandingPage = () => {
+    const [searchResults, setSearchResults] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const handleSearch = (query) => {
+        setSearchQuery(query.toLowerCase());
+    };
+
     return (
         <div>
-            <Navbar />
+            <Navbar onSearch={handleSearch} />
             <div className="header">
                 <div className="header-content">
                     <h2>Welcome To Your World of Recipes</h2>
@@ -17,7 +23,7 @@ const LandingPage = () => {
             </div>
             <div className="form-container">
                 <RecipeWidget /> 
-                <RecipeList />
+                <RecipeList searchQuery={searchQuery} />
             </div>
         </div>
     );
