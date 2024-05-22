@@ -4,11 +4,10 @@ import { Grid, Container, Typography, Snackbar, Alert } from '@mui/material';
 import RecipeCard from 'components/RecipeCards';
 import { Link } from 'react-router-dom';
 
-const ARecipeList = () => {
+const RecipeList = ({ searchQuery }) => {
   const [recipes, setRecipes] = useState([]);
   const [message, setMessage] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -29,9 +28,10 @@ const ARecipeList = () => {
     setOpenSnackbar(true);
   };
 
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
+  // Filtering logic
+  const filteredRecipes = recipes.filter(recipe =>
+    recipe.name.toLowerCase().includes(searchQuery)
+  );
 
   return (
     <Container>
@@ -39,10 +39,10 @@ const ARecipeList = () => {
         Recipes
       </Typography>
       <Grid container spacing={3}>
-        {recipes.map((recipe) => (
+        {filteredRecipes.map((recipe) => (
           <Grid item xs={12} sm={6} md={4} key={recipe._id}>
             <Link to={`/recipes/${recipe._id}`} style={{ textDecoration: 'none' }}>
-            <RecipeCard recipe={recipe} onDelete={handleDelete} />
+              <RecipeCard recipe={recipe} onDelete={handleDelete} />
             </Link>
           </Grid>
         ))}
@@ -50,9 +50,9 @@ const ARecipeList = () => {
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
+        onClose={() => setOpenSnackbar(false)}
       >
-        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+        <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
           {message}
         </Alert>
       </Snackbar>
@@ -60,4 +60,4 @@ const ARecipeList = () => {
   );
 };
 
-export default ARecipeList;
+export default RecipeList;

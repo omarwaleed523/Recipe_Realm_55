@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   IconButton,
@@ -19,21 +19,20 @@ import {
   Home as HomeIcon,
   RssFeed as FeedIcon,
   Dashboard as DashboardIcon,
-  Info as AboutIcon, // Import the About icon
+  Info as AboutIcon,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state";
 import FlexBetween from "components/FlexBetween";
 import { Link } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ onSearch }) => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const isAdmin = user ? `${user.usertype}` : '';
-
-  console.log(isAdmin);
 
   const theme = useTheme();
   const neutralLight = theme.palette.neutral.light;
@@ -44,6 +43,11 @@ const Navbar = () => {
 
   const fullName = user ? `${user.firstName} ${user.lastName}` : '';
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    onSearch(e.target.value);
+  };
+
   return (
     <FlexBetween padding="1rem 6%" backgroundColor={alt}>
       <FlexBetween gap="1.75rem">
@@ -51,7 +55,7 @@ const Navbar = () => {
           fontWeight="bold"
           fontSize="clamp(1rem, 2rem, 2.25rem)"
           color="primary"
-          component={Link} to="/LandingPage" // Add Link to Home
+          component={Link} to="/LandingPage"
           sx={{
             "&:hover": {
               color: primaryLight,
@@ -68,7 +72,11 @@ const Navbar = () => {
             gap="3rem"
             padding="0.1rem 1.5rem"
           >
-            <InputBase placeholder="Search..." />
+            <InputBase
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
             <IconButton>
               <Search />
             </IconButton>
@@ -79,29 +87,21 @@ const Navbar = () => {
       {/* DESKTOP NAV */}
       {isNonMobileScreens ? (
         <FlexBetween gap="2rem">
-          {/* Add Link to Home */}
           <IconButton component={Link} to="/LandingPage">
             <HomeIcon sx={{ fontSize: "25px" }} />
-            <FlexBetween gap="2rem"></FlexBetween>
             Home
           </IconButton>
-          {/* Add Link to Feed */}
           <IconButton component={Link} to="/home">
             <FeedIcon sx={{ fontSize: "25px" }} />
-            <FlexBetween gap="2rem"></FlexBetween>
             Feed
           </IconButton>
-          {/* Add Link to About */}
           <IconButton component={Link} to="/About">
-            <AboutIcon sx={{ fontSize: "25px" }} /> {/* Use the About icon */}
-            <FlexBetween gap="2rem"></FlexBetween>
-            About Us {/* Text label */}
+            <AboutIcon sx={{ fontSize: "25px" }} />
+            About Us
           </IconButton>
-          {/* Add Link to AdminDashboard */}
           {isAdmin === 'admin' && (
             <IconButton component={Link} to="/Admin">
               <DashboardIcon sx={{ fontSize: "25px" }} />
-              <FlexBetween gap="2rem"></FlexBetween>
               Dashboard
             </IconButton>
           )}
