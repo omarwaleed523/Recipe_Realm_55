@@ -12,6 +12,9 @@ import { themeSettings } from "./theme";
 import LandingPage from "scenes/LandingPage/LandingPage";
 import RecipeDetail from "components/RecipeDetail";
 import About from "Aboutus/About";
+import Breakfast from "OurRecipes/Breakfast";
+import Lunch from "OurRecipes/Lunch";
+import Dinner from "OurRecipes/Dinner";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -46,6 +49,18 @@ function App() {
               element={isAuth ? <AdminBoard /> : <Navigate to="/" />}
             />
             <Route
+              path="/Breakfast"
+              element={isAuth ? <Breakfast /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/Dinner"
+              element={isAuth ? <Dinner /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/Lunch"
+              element={isAuth ? <Lunch /> : <Navigate to="/" />}
+            />
+            <Route
               path="/recipes/:id"
               element={isAuth ? <RecipeDetail /> : <Navigate to="/" />}
             />
@@ -53,6 +68,9 @@ function App() {
             <Route path="/home" element={<HomePage />} />
             <Route path="/LandingPage" element={<LandingPage />} />
             <Route path="/About" element={<About />} />
+            <Route path="/Breakfast" element={<Breakfast />} />
+            <Route path="/Lunch" element={<Lunch />} />
+            <Route path="/Dinner" element={<Dinner />} />
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

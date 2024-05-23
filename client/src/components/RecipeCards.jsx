@@ -2,14 +2,12 @@ import React from 'react';
 import { Card, CardContent, CardMedia, Typography, Button, Box } from '@mui/material';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-
-const ARecipeCard = ({ recipe, onDelete }) => {
+const RecipeCard = ({ recipe, onDelete }) => {
   const token = useSelector((state) => state.token);
   const user = useSelector((state) => state.user);
   const isAdmin = user ? `${user.usertype}` : '';
-
-  console.log(isAdmin);
 
   const handleDelete = async () => {
     try {
@@ -38,6 +36,7 @@ const ARecipeCard = ({ recipe, onDelete }) => {
       }}
     >
       {recipe.recipeImage && (
+        <Link to={`/recipes/${recipe._id}`} style={{ textDecoration: 'none' }}>
         <CardMedia
           component="img"
           image={`http://localhost:3001/assets/${recipe.recipeImage}`}
@@ -50,26 +49,30 @@ const ARecipeCard = ({ recipe, onDelete }) => {
             borderTopRightRadius: '8px'
           }}
         />
+        </Link>
       )}
+      <Link to={`/recipes/${recipe._id}`} style={{ textDecoration: 'none' }}>
       <CardContent sx={{ backgroundColor: 'rgb(229,114,28)', color: 'white' }}>
         <Typography variant="h3" component="div">
           {recipe.name}
         </Typography>
-        {isAdmin === 'admin' && (
-        <Box mt={1}>
+      </CardContent>
+      </Link>
+      {isAdmin === 'admin' && (
+        
           <Button
+          
             variant="contained"
             color="error"
             onClick={handleDelete}
-            sx={{ marginTop: '1rem' }}
+            sx={{ width: '100%' }}
           >
             Delete
           </Button>
-        </Box>
+        
         )}
-      </CardContent>
     </Card>
   );
 };
 
-export default ARecipeCard;
+export default RecipeCard;
