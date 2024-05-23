@@ -13,10 +13,15 @@ const AdminBoard = () => {
   const [activeView, setActiveView] = useState('recipes');
   const fullName = user ? `${user.firstName} ${user.lastName}` : '';
   const isAdmin = user ? `${user.userType}` : '';
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (query) => {
+      setSearchQuery(query.toLowerCase());
+  };
 
   return (
     <>
-      <Navbar />
+      <Navbar onSearch={handleSearch} />
       <div>
         <h1>Hello {fullName}</h1> 
 
@@ -56,7 +61,7 @@ const AdminBoard = () => {
             mt={isNonMobileScreens ? undefined : "2rem"}
           >
             {activeView === 'recipes' && (
-              <RecipeList  />
+              <RecipeList searchQuery={searchQuery} />
             )}
             {activeView === 'posts' && (
               <APostsWidget userId={_id}  />

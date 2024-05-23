@@ -9,6 +9,7 @@ import {
   FormControl,
   useTheme,
   useMediaQuery,
+  Popover,
 } from "@mui/material";
 import {
   Search,
@@ -20,6 +21,7 @@ import {
   RssFeed as FeedIcon,
   Dashboard as DashboardIcon,
   Info as AboutIcon,
+  RamenDining as RecipeIcon,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state";
@@ -29,6 +31,9 @@ import { Link } from "react-router-dom";
 const Navbar = ({ onSearch }) => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedRecipeType, setSelectedRecipeType] = useState("");
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -46,6 +51,20 @@ const Navbar = ({ onSearch }) => {
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
     onSearch(e.target.value);
+  };
+
+  const handleRecipeTypeChange = (event) => {
+    setSelectedRecipeType(event.target.value);
+    // You can add logic here to handle the selection
+  };
+
+  const handleOurRecipesHoverEnter = (event) => {
+    setAnchorEl(event.currentTarget);
+    setIsPopoverOpen(true);
+  };
+
+  const handleOurRecipesHoverLeave = () => {
+    setIsPopoverOpen(false);
   };
 
   return (
@@ -91,6 +110,53 @@ const Navbar = ({ onSearch }) => {
             <HomeIcon sx={{ fontSize: "25px" }} />
             Home
           </IconButton>
+          <Box
+            onMouseEnter={handleOurRecipesHoverEnter}
+            onMouseLeave={handleOurRecipesHoverLeave}
+          >
+            <IconButton
+              aria-describedby="our-recipes-popover"
+              sx={{
+                "&:hover": {
+                  color: primaryLight,
+                },
+              }}
+            >
+              <RecipeIcon sx={{ fontSize: "25px", marginRight: "0.5rem" }} />
+              Our Recipes
+            </IconButton>
+            <Popover
+              id="our-recipes-popover"
+              open={isPopoverOpen}
+              anchorEl={anchorEl}
+              onClose={() => setIsPopoverOpen(false)}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              disableRestoreFocus
+            >
+              <Box
+                p={2}
+                onMouseEnter={() => setIsPopoverOpen(true)}
+                onMouseLeave={handleOurRecipesHoverLeave}
+              >
+                <MenuItem component={Link} to="/Breakfast" onClick={() => setIsPopoverOpen(false)}>
+                  Breakfast
+                </MenuItem>
+                <MenuItem component={Link} to="/Lunch" onClick={() => setIsPopoverOpen(false)}>
+                  Lunch
+                </MenuItem>
+                <MenuItem component={Link} to="/Dinner" onClick={() => setIsPopoverOpen(false)}>
+                  Dinner
+                </MenuItem>
+              </Box>
+            </Popover>
+          </Box>
           <IconButton component={Link} to="/home">
             <FeedIcon sx={{ fontSize: "25px" }} />
             Feed
@@ -133,7 +199,9 @@ const Navbar = ({ onSearch }) => {
               <MenuItem value={fullName}>
                 <Typography>{fullName}</Typography>
               </MenuItem>
-              <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
+              <MenuItem onClick={() => dispatch(setLogout())}>
+                Log Out
+              </MenuItem>
             </Select>
           </FormControl>
         </FlexBetween>

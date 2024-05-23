@@ -28,9 +28,13 @@ const RecipeList = ({ searchQuery }) => {
     setOpenSnackbar(true);
   };
 
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
   // Filtering logic
   const filteredRecipes = recipes.filter(recipe =>
-    recipe.name.toLowerCase().includes(searchQuery)
+    recipe.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -41,18 +45,18 @@ const RecipeList = ({ searchQuery }) => {
       <Grid container spacing={3}>
         {filteredRecipes.map((recipe) => (
           <Grid item xs={12} sm={6} md={4} key={recipe._id}>
-            <Link to={`/recipes/${recipe._id}`} style={{ textDecoration: 'none' }}>
+            
               <RecipeCard recipe={recipe} onDelete={handleDelete} />
-            </Link>
+          
           </Grid>
         ))}
       </Grid>
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
+        onClose={handleCloseSnackbar}
       >
-        <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
+        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
           {message}
         </Alert>
       </Snackbar>
